@@ -1,2 +1,3 @@
-# chip8-swift
-A CHIP8 emulator done in pure Swift
+# CHIP8
+
+A description of this package.
