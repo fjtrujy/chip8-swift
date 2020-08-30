@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: swift:5.2.5-bionic
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run test (in Release)
+      run: |
+        swift test
+
+    # - name: Compile project (in Release)
+    #   run: |
+    #     swift build -c release
+    
+    # - name: Run project
+    #   run: |
+    #     ./.build/release/orbis-parser
+
+    # - name: Prepare Artifacts
+    #   run: |
+    #     tar -zcvf lib_s.tar.gz lib_s
+    
+    # - uses: actions/upload-artifact@v2
+    #   with:
+    #     name: lib_s
+    #     path: lib_s.tar.gz
+
+    # - name: Create tag name
+    #   if: startsWith(github.ref, 'refs/tags/') != true
+    #   run: |
+    #     export TAGNAME="snapshot_$(date +'%Y_%m_%d_%H%M%S')"
+    #     echo "::set-env name=NEW_TAGNAME::$TAGNAME"
+    
+    # - name: Use tag name
+    #   if: startsWith(github.ref, 'refs/tags/')
+    #   run: |
+    #     export TAGNAME="$(echo ${GITHUB_REF##*/})"
+    #     echo "::set-env name=NEW_TAGNAME::$TAGNAME"
+    
+    # - name: Release
+    #   if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/master'
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     files: lib_s.tar.gz
+    #     tag_name: ${{ env.NEW_TAGNAME }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
