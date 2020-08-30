@@ -68,12 +68,12 @@ class CHIP8 {
     func loop() {
         while !mustQuit {
             let opCode = machine.opCode
-            let nnn = opCode & Constants.nnnMask
-            let kk = UInt8(opCode & Constants.kkMask)
-            let n = UInt8(opCode & Constants.nMask)
-            let x = UInt8((opCode >> 8) & Constants.nMask)
-            let y = UInt8((opCode >> 4) & Constants.nMask)
-            let p = UInt8(opCode >> 12)
+//            let nnn = opCode & Constants.nnnMask
+//            let kk = UInt8(opCode & Constants.kkMask)
+//            let n = UInt8(opCode & Constants.nMask)
+//            let x = UInt8((opCode >> 8) & Constants.nMask)
+//            let y = UInt8((opCode >> 4) & Constants.nMask)
+//            let p = UInt8(opCode >> 12)
             
             print(String(opCode, radix: 16))
         }
