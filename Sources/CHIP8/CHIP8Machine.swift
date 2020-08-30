@@ -1,3 +1,4 @@
+import Foundation
 
 private enum Constants {
     static let memSize = 4096
@@ -5,7 +6,7 @@ private enum Constants {
     static let stackSize = 16
 }
 
-struct CHIP8 {
+struct CHIP8Machine {
     var mem: [UInt8] = [UInt8](repeating: .zero, count: Constants.memSize) // Available Memory
     var pc: UInt16 = .zero // Program Counter
     

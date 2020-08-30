@@ -1,8 +1,8 @@
 import XCTest
 @testable import CHIP8
 
-final class CHIP8Tests: XCTestCase {
-    let chip8 = CHIP8()
+final class CHIP8MachineTests: XCTestCase {
+    let chip8 = CHIP8Machine()
     
     func testMemSize() {
         XCTAssert(chip8.mem.count == 4096, "The memory size must be 64 and it is \(chip8.mem.count)")
