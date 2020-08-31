@@ -12,9 +12,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Run test (in Release)
+    - name: Run test (in Release, with optimization level)
       run: |
-        swift test
+        swift test -Xswiftc -O
 
     # - name: Compile project (in Release)
     #   run: |
