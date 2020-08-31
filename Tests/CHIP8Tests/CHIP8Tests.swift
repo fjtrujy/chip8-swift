@@ -16,13 +16,11 @@ final class CHIP8Tests: XCTestCase {
     }
     
     func testLoadRom() {
-        
-//        chip8.loadROM()
-        XCTAssert(true)
+        chip8.loadROM()
     }
     
     func testMemoryDecoding() {
-        chip8.loop()
+//        chip8.loop()
         XCTAssert(true)
     }
 }
