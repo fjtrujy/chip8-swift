@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  CHIP8Tests.swift
 //  
 //
 //  Created by Francisco Javier Trujillo Mata on 30/08/2020.
