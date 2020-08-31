@@ -39,12 +39,6 @@ private enum Rom {
     static let pongData = Data(Rom.pong)
 }
 
-private enum Constants {
-    static let nnnMask: UInt16 = 0x0FFF
-    static let kkMask: UInt16 = 0xFF
-    static let nMask: UInt16 = 0xF
-}
-
 class CHIP8 {
     private var machine: CHIP8Machine
     private var mustQuit: Bool
@@ -67,15 +61,14 @@ class CHIP8 {
     
     func loop() {
         while !mustQuit {
-            let opCode = machine.opCode
-//            let nnn = opCode & Constants.nnnMask
-//            let kk = UInt8(opCode & Constants.kkMask)
-//            let n = UInt8(opCode & Constants.nMask)
-//            let x = UInt8((opCode >> 8) & Constants.nMask)
-//            let y = UInt8((opCode >> 4) & Constants.nMask)
-//            let p = UInt8(opCode >> 12)
+            let decodedOpCode = CHIP8OPCode(opCode: machine.opCode)
+            print(decodedOpCode)
             
-            print(String(opCode, radix: 16))
+            machine.pc += 2
+            if machine.pc >= machine.mem.count - 1 {
+                machine.pc = 0
+                mustQuit = true
+            }
         }
     }
 }

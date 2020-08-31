@@ -11,12 +11,19 @@ import XCTest
 final class CHIP8Tests: XCTestCase {
     let chip8 = CHIP8()
     
-    func testDummy() {
-        
+    override func setUp() {
         chip8.loadROM()
-//        chip8.loop()
+    }
+    
+    func testLoadRom() {
+        
+//        chip8.loadROM()
         XCTAssert(true)
-//        XCTAssert((chip8.mem as Any) is [UInt8], "The memory array is not UInt8")
+    }
+    
+    func testMemoryDecoding() {
+        chip8.loop()
+        XCTAssert(true)
     }
 }
 

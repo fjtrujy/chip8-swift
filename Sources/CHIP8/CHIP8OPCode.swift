@@ -1,5 +1,5 @@
 //
-//  CHIP8OPCodes.swift
+//  CHIP8OPCode.swift
 //  
 //
 //  Created by Francisco Javier Trujillo Mata on 31/08/2020.
@@ -13,7 +13,7 @@ private enum Constants {
     static let nMask: UInt16 = 0xF
 }
 
-enum CHIP8OPCodes {
+enum CHIP8OPCode {
     case CLS
     case RET
     case SYS(nnn: UInt16)

@@ -22,7 +22,8 @@ extension CHIP8Tests {
     //   `swift test --generate-linuxmain`
     // to regenerate.
     static let __allTests__CHIP8Tests = [
-        ("testDummy", testDummy),
+        ("testLoadRom", testLoadRom),
+        ("testMemoryDecoding", testMemoryDecoding),
     ]
 }
 
