@@ -42,6 +42,7 @@ private enum Rom {
 private enum Constants {
     static let lastRegPos = 0xF
     static let mostBitReg: UInt8 = 0x80
+    static let MAXPCValue: UInt16 = 0xFFF
 }
 
 class CHIP8 {
@@ -122,5 +123,5 @@ class CHIP8 {
         }
     }
     
-    private func increasePC() { machine.pc = machine.pc + 2 >= machine.mem.count - 1 ? .zero : machine.pc + 2 }
+    private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
 }

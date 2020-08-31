@@ -1,16 +1,10 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "CHIP8",
-    products: [
-        // Products define the executables and libraries produced by a package, and make them visible to other packages.
-        .library(
-            name: "CHIP8",
-            targets: ["CHIP8"]),
-    ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
@@ -21,6 +15,9 @@ let package = Package(
         .target(
             name: "CHIP8",
             dependencies: []),
+        .target(
+            name: "CHIP8App",
+            dependencies: ["CHIP8"]),
         .testTarget(
             name: "CHIP8Tests",
             dependencies: ["CHIP8"]),
