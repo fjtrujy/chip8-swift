@@ -14,7 +14,7 @@ jobs:
 
     - name: Run test (in Release, with optimization level)
       run: |
-        swift test -Xswiftc -O
+        swift test -Xswiftc -cross-module-optimization
 
     # - name: Compile project (in Release)
     #   run: |
