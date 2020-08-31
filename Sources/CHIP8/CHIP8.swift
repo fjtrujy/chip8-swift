@@ -42,6 +42,7 @@ private enum Rom {
 class CHIP8 {
     private var machine: CHIP8Machine
     private var mustQuit: Bool
+    private var opCode: CHIP8OPCode = .UKNOWN
     
     init(machine: CHIP8Machine = CHIP8Machine(),
          mustQuit: Bool = false){
@@ -61,8 +62,8 @@ class CHIP8 {
     
     func loop() {
         while !mustQuit {
-            let decodedOpCode = CHIP8OPCode(opCode: machine.opCode)
-            print(decodedOpCode)
+            opCode = CHIP8OPCode(opCode: machine.opCode)
+//            print(decodedOpCode)
             
             machine.pc += 2
             if machine.pc >= machine.mem.count - 1 {
