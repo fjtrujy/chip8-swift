@@ -11,6 +11,11 @@ jobs:
     container: swift:bionic
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Install Ubuntu lidsdl2-dev
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install libsdl2-dev
 
     - name: Run test (in Release, with optimization level)
       run: |
