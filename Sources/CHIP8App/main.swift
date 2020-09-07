@@ -13,9 +13,17 @@ let window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MA
 
 var pixels: UnsafeMutableRawPointer?
 var pitch: Int32 = .zero
+var pixelFormat: UInt32 {
+    #if os(Linux)
+        return UInt32(SDL_PIXELFORMAT_RGBA8888)
+    #else
+        return SDL_PIXELFORMAT_RGBA8888.rawValue
+    #endif
+}
 
 let renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED.rawValue)
-let texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888.rawValue, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue), 64, 32)
+let texture = SDL_CreateTexture(renderer, pixelFormat, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue), 64, 32)
+
 SDL_LockTexture(texture, nil, &pixels, &pitch)
 
 // We need to specify the type of the array
