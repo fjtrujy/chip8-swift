@@ -7,15 +7,25 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container: swift:bionic
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+        
     steps:
     - uses: actions/checkout@v2
     
     - name: Install Ubuntu lidsdl2-dev
+      if: matrix.os == 'ubuntu-latest'
       run: |
-        apt-get update
-        apt-get -y install libsdl2-dev
+        sudo apt-get update
+        sudo apt-get -y install libsdl2-dev
+    
+    - name: Install Mac lidsdl2-dev
+      if: matrix.os == 'macOS-latest'
+      run: |
+        brew update
+        brew install sdl2
 
     - name: Run test (in Release, with optimization level)
       run: |
