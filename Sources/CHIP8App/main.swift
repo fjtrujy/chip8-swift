@@ -1,14 +1,12 @@
 //
-//  File.swift
+//  main.swift
 //  
 //
-//  Created by Francisco Javier Trujillo Mata on 31/08/2020.
+//  Created by Francisco Javier Trujillo Mata on 07/09/2020.
 //
 
 import Foundation
 import SDL2
-import Metal
-import class QuartzCore.CAMetalLayer
 
 SDL_Init(SDL_INIT_VIDEO)
 let window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MASK), Int32(SDL_WINDOWPOS_CENTERED_MASK), 640, 320, SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
@@ -41,4 +39,3 @@ while !mustQuit {
 SDL_DestroyRenderer(renderer)
 SDL_DestroyWindow(window)
 SDL_Quit()
-
