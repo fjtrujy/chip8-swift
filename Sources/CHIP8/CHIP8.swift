@@ -72,11 +72,18 @@ public class CHIP8 {
         increasePC()
         
         switch opCode {
-        case .CLS: break
-        case .RET: break
+        case .CLS: clearScreen()
+        case .RET:
+            guard machine.sp > .zero else { return }
+            machine.sp -= 1
+            machine.pc = machine.stack[Int(machine.sp)]
         case .SYS(let nnnn): break
         case .JP(let nnn): machine.pc = nnn
-        case .CALL(let nnn): break
+        case .CALL(let nnn):
+            guard machine.sp < machine.stack.count else { return }
+            machine.stack[Int(machine.sp)] = machine.pc
+            machine.sp += 1
+            machine.pc = nnn
         case .SE(let x, let kk): machine.v[Int(x)] == kk ? increasePC() : nil
         case .SNE(let x, let kk): machine.v[Int(x)] != kk ? increasePC() : nil
         case .SE_VxVy(let x, let y): machine.v[Int(x)] == machine.v[Int(y)] ? increasePC() : nil
@@ -104,7 +111,7 @@ public class CHIP8 {
         case .SNE_VxVy(let x, let y): machine.v[Int(x)] != machine.v[Int(y)] ? increasePC() : nil
         case .LD(let nnn): machine.i = nnn
         case .JP_V0(let nnn): machine.pc = (UInt16(machine.v[.zero]) + nnn) & Constants.MAXPCValue
-        case .RND(let x, let kk): break
+        case .RND(let x, let kk): machine.v[Int(x)] = UInt8(Int8.random(in: Int8.zero...Int8.max)) & kk
         case .DRW(let x, let y, let nibble): break
         case .SKP(let x): break
         case .SKNP(let x): break
@@ -122,4 +129,5 @@ public class CHIP8 {
     }
     
     private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
+    private func clearScreen() { (0..<machine.screen.count).forEach { machine.screen[$0] = .zero } }
 }
