@@ -5,9 +5,10 @@ private enum Constants {
     static let regs = 16
     static let stackSize = 16
     static let pcPos: UInt16 = 0x200
+    static let screenSize = 64*32
 }
 
-struct CHIP8Machine {
+public struct CHIP8Machine {
     var mem: [UInt8] = [UInt8](repeating: .zero, count: Constants.memSize) // Available Memory
     var pc: UInt16 = Constants.pcPos // Program Counter
     
@@ -19,9 +20,13 @@ struct CHIP8Machine {
     var dt: UInt8 = .zero // Delay Timer
     var st: UInt8 = .zero // Sound Timer
     
+    var screen: [UInt8] = [UInt8](repeating: .zero, count: Constants.screenSize)
+    
     var opCode: UInt16 {
         let firstCode: UInt16 = UInt16(mem[Int(pc)])
         let secondCode: UInt16 = UInt16(mem[Int(pc+1)])
         return (firstCode << 8) | secondCode
     }
+    
+    public init() {}
 }

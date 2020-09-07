@@ -45,11 +45,11 @@ private enum Constants {
     static let MAXPCValue: UInt16 = 0xFFF
 }
 
-class CHIP8 {
+public class CHIP8 {
     private var machine: CHIP8Machine
     private var mustQuit: Bool
     
-    init(machine: CHIP8Machine = CHIP8Machine(),
+    public init(machine: CHIP8Machine = CHIP8Machine(),
          mustQuit: Bool = false){
         self.machine = machine
         self.mustQuit = mustQuit
@@ -65,61 +65,59 @@ class CHIP8 {
         print(machine.mem)
     }
     
-    func loop() {
-        while !mustQuit {
-            let opCode = CHIP8OPCode(opCode: machine.opCode)
-            increasePC()
-            print(opCode)
-            
-            
-            switch opCode {
-            case .CLS: break
-            case .RET: break
-            case .SYS(let nnnn): break
-            case .JP(let nnn): machine.pc = nnn
-            case .CALL(let nnn): break
-            case .SE(let x, let kk): machine.v[Int(x)] == kk ? increasePC() : nil
-            case .SNE(let x, let kk): machine.v[Int(x)] != kk ? increasePC() : nil
-            case .SE_VxVy(let x, let y): machine.v[Int(x)] == machine.v[Int(y)] ? increasePC() : nil
-            case .LD_Vx(let x, let kk): machine.v[Int(x)] = kk
-            case .ADD(let x, let kk): machine.v[Int(x)] += kk
-            case .LD_VxVy(x: let x, y: let y): machine.v[Int(x)] = machine.v[Int(y)]
-            case .OR(let x, let y): machine.v[Int(x)] |= machine.v[Int(y)]
-            case .AND(let x, let y): machine.v[Int(x)] &= machine.v[Int(y)]
-            case .XOR(let x, let y): machine.v[Int(x)] ^= machine.v[Int(y)]
-            case .ADD_VxVy(let x, let y):
-                machine.v[0xF] = machine.v[Int(x)] > machine.v[Int(x)] + machine.v[Int(y)] ? 1 : .zero // CARRY FLAG
-                machine.v[Int(x)] += machine.v[Int(y)]
-            case .SUB(let x, let y):
-                machine.v[Constants.lastRegPos] = machine.v[Int(x)] > machine.v[Int(y)] ? 1 : .zero // CARRY FLAG
-                machine.v[Int(x)] -= machine.v[Int(y)]
-            case .SHR(let x):
-                machine.v[Constants.lastRegPos] = machine.v[Int(x)] & 1
-                machine.v[Int(x)] >>= 1
-            case .SUBN(let x, let y):
-                machine.v[Constants.lastRegPos] = machine.v[Int(y)] > machine.v[Int(x)] ? 1 : .zero // CARRY FLAG
-                machine.v[Int(x)] = machine.v[Int(y)] - machine.v[Int(x)]
-            case .SHL(let x):
-                machine.v[Constants.lastRegPos] = (machine.v[Int(x)] & Constants.mostBitReg) != .zero ? 1 : .zero
-                machine.v[Int(x)] <<= 1
-            case .SNE_VxVy(let x, let y): machine.v[Int(x)] != machine.v[Int(y)] ? increasePC() : nil
-            case .LD(let nnn): machine.i = nnn
-            case .JP_V0(let nnn): machine.pc = (UInt16(machine.v[.zero]) + nnn) & Constants.MAXPCValue
-            case .RND(let x, let kk): break
-            case .DRW(let x, let y, let nibble): break
-            case .SKP(let x): break
-            case .SKNP(let x): break
-            case .LD_FROM_DT(let x): machine.v[Int(x)] = machine.dt
-            case .LD_FROM_K(let x): break
-            case .LD_TO_DT(let x): machine.dt = machine.v[Int(x)]
-            case .LD_TO_ST(let x): machine.st = machine.v[Int(x)]
-            case .ADD_I(let x): machine.i += UInt16(machine.v[Int(x)])
-            case .LD_TO_I(let x): break
-            case .LD_TO_B(let x): break
-            case .LD_TO_Vxs(let x): break
-            case .LD_FROM_Vxs(let x): break
-            case .UKNOWN: print("Trying to execute a uknown instructions")
-            }
+    public func screenContent()-> [UInt8] { machine.screen }
+    
+    public func step() {
+        let opCode = CHIP8OPCode(opCode: machine.opCode)
+        increasePC()
+        
+        switch opCode {
+        case .CLS: break
+        case .RET: break
+        case .SYS(let nnnn): break
+        case .JP(let nnn): machine.pc = nnn
+        case .CALL(let nnn): break
+        case .SE(let x, let kk): machine.v[Int(x)] == kk ? increasePC() : nil
+        case .SNE(let x, let kk): machine.v[Int(x)] != kk ? increasePC() : nil
+        case .SE_VxVy(let x, let y): machine.v[Int(x)] == machine.v[Int(y)] ? increasePC() : nil
+        case .LD_Vx(let x, let kk): machine.v[Int(x)] = kk
+        case .ADD(let x, let kk): machine.v[Int(x)] += kk
+        case .LD_VxVy(x: let x, y: let y): machine.v[Int(x)] = machine.v[Int(y)]
+        case .OR(let x, let y): machine.v[Int(x)] |= machine.v[Int(y)]
+        case .AND(let x, let y): machine.v[Int(x)] &= machine.v[Int(y)]
+        case .XOR(let x, let y): machine.v[Int(x)] ^= machine.v[Int(y)]
+        case .ADD_VxVy(let x, let y):
+            machine.v[0xF] = machine.v[Int(x)] > machine.v[Int(x)] + machine.v[Int(y)] ? 1 : .zero // CARRY FLAG
+            machine.v[Int(x)] += machine.v[Int(y)]
+        case .SUB(let x, let y):
+            machine.v[Constants.lastRegPos] = machine.v[Int(x)] > machine.v[Int(y)] ? 1 : .zero // CARRY FLAG
+            machine.v[Int(x)] -= machine.v[Int(y)]
+        case .SHR(let x):
+            machine.v[Constants.lastRegPos] = machine.v[Int(x)] & 1
+            machine.v[Int(x)] >>= 1
+        case .SUBN(let x, let y):
+            machine.v[Constants.lastRegPos] = machine.v[Int(y)] > machine.v[Int(x)] ? 1 : .zero // CARRY FLAG
+            machine.v[Int(x)] = machine.v[Int(y)] - machine.v[Int(x)]
+        case .SHL(let x):
+            machine.v[Constants.lastRegPos] = (machine.v[Int(x)] & Constants.mostBitReg) != .zero ? 1 : .zero
+            machine.v[Int(x)] <<= 1
+        case .SNE_VxVy(let x, let y): machine.v[Int(x)] != machine.v[Int(y)] ? increasePC() : nil
+        case .LD(let nnn): machine.i = nnn
+        case .JP_V0(let nnn): machine.pc = (UInt16(machine.v[.zero]) + nnn) & Constants.MAXPCValue
+        case .RND(let x, let kk): break
+        case .DRW(let x, let y, let nibble): break
+        case .SKP(let x): break
+        case .SKNP(let x): break
+        case .LD_FROM_DT(let x): machine.v[Int(x)] = machine.dt
+        case .LD_FROM_K(let x): break
+        case .LD_TO_DT(let x): machine.dt = machine.v[Int(x)]
+        case .LD_TO_ST(let x): machine.st = machine.v[Int(x)]
+        case .ADD_I(let x): machine.i += UInt16(machine.v[Int(x)])
+        case .LD_TO_I(let x): break
+        case .LD_TO_B(let x): break
+        case .LD_TO_Vxs(let x): break
+        case .LD_FROM_Vxs(let x): break
+        case .UKNOWN: print("Trying to execute a uknown instructions")
         }
     }
     
