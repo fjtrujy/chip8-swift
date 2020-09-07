@@ -39,9 +39,9 @@ while !mustQuit {
     SDL_RenderCopy(renderer, texture, nil, nil)
     SDL_RenderPresent(renderer)
     SDL_WaitEvent(&ev)
-    if SDL_EventType(ev.type)  == SDL_QUIT {
-        mustQuit = true
-    }
+    
+    // Exit the app
+    mustQuit = SDL_EventType(ev.type) == SDL_QUIT
 }
 
 SDL_DestroyRenderer(renderer)
