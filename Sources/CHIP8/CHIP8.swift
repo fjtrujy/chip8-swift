@@ -104,7 +104,7 @@ class CHIP8 {
                 machine.v[Int(x)] <<= 1
             case .SNE_VxVy(let x, let y): machine.v[Int(x)] != machine.v[Int(y)] ? increasePC() : nil
             case .LD(let nnn): machine.i = nnn
-            case .JP_V0(let nnn): machine.pc = UInt16(machine.v[.zero]) + nnn
+            case .JP_V0(let nnn): machine.pc = (UInt16(machine.v[.zero]) + nnn) & Constants.MAXPCValue
             case .RND(let x, let kk): break
             case .DRW(let x, let y, let nibble): break
             case .SKP(let x): break
