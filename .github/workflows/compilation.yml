@@ -42,6 +42,7 @@ jobs:
     - name: Prepare upload
       run: |
         mv .build/release/CHIP8App CHIP8App
+        chmod 700 CHIP8App
     
     - uses: actions/upload-artifact@v2
       with:
