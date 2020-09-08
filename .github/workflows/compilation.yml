@@ -31,22 +31,18 @@ jobs:
       run: |
         swift test -Xswiftc -O
 
-    # - name: Compile project (in Release)
-    #   run: |
-    #     swift build -c release
+    - name: Compile project (in Release)
+      run: |
+        swift build -c release
     
     # - name: Run project
     #   run: |
     #     ./.build/release/orbis-parser
-
-    # - name: Prepare Artifacts
-    #   run: |
-    #     tar -zcvf lib_s.tar.gz lib_s
     
-    # - uses: actions/upload-artifact@v2
-    #   with:
-    #     name: lib_s
-    #     path: lib_s.tar.gz
+    - uses: actions/upload-artifact@v2
+      with:
+        name: CHIP8App-${matrix.os}
+        path: .build/release/CHIP8App
 
     # - name: Create tag name
     #   if: startsWith(github.ref, 'refs/tags/') != true
