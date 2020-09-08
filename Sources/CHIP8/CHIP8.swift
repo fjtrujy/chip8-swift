@@ -120,10 +120,10 @@ public class CHIP8 {
         case .LD_TO_DT(let x): machine.dt = machine.v[Int(x)]
         case .LD_TO_ST(let x): machine.st = machine.v[Int(x)]
         case .ADD_I(let x): machine.i += UInt16(machine.v[Int(x)])
-        case .LD_TO_I(let x): break
-        case .LD_TO_B(let x): break
-        case .LD_TO_Vxs(let x): break
-        case .LD_FROM_Vxs(let x): break
+        case .LD_TO_I(let x): machine.i = UInt16(machine.hexCodePos(hexCode: x))
+        case .LD_TO_B(let x): ldToB(x: x)
+        case .LD_TO_Vxs(let x): (0...x).forEach { machine.mem[Int(machine.i + UInt16($0))] = machine.v[Int($0)] }
+        case .LD_FROM_Vxs(let x): (0...x).forEach { machine.v[Int($0)] = machine.mem[Int(machine.i + UInt16($0))] }
         case .UKNOWN: print("Trying to execute a uknown instructions")
         }
     }
@@ -131,7 +131,7 @@ public class CHIP8 {
     private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
     private func clearScreen() { (0..<machine.screen.count).forEach { machine.screen[$0] = false } }
     private func drw(x: UInt8, y: UInt8, n: UInt8) {
-        machine.v[machine.v.count - 1] = .zero
+        machine.v[Constants.lastRegPos] = .zero
         (0..<n).forEach { pass in
             let sprite = machine.mem[Int(machine.i + UInt16(pass))]
             (0..<8).forEach {
@@ -139,9 +139,14 @@ public class CHIP8 {
                 let py = (Int(machine.v[Int(y)]) + Int(pass)) & 31
                 let pos = 64 * py + px
                 let pixelOn = ((sprite & (1 << (7 - $0))) != .zero)
-                machine.v[machine.v.count - 1] |= (machine.screen[pos] && pixelOn) ? 1 : .zero
+                machine.v[Constants.lastRegPos] |= (machine.screen[pos] && pixelOn) ? 1 : .zero
                 machine.screen[pos] = machine.screen[pos] != pixelOn
             }
         }
+    }
+    private func ldToB(x: UInt8) {
+        machine.mem[Int(machine.i) + 2] = machine.v[Int(x)] % 10
+        machine.mem[Int(machine.i) + 1] = (machine.v[Int(x)] / 10) % 10
+        machine.mem[Int(machine.i)] = machine.v[Int(x)] / 100
     }
 }
