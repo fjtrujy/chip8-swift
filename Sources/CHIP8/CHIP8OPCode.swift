@@ -16,7 +16,6 @@ private enum Constants {
 enum CHIP8OPCode {
     case CLS
     case RET
-    case SYS(nnn: UInt16)
     case JP(nnn: UInt16)
     case CALL(nnn: UInt16)
     case SE(x: UInt8, kk: UInt8)
@@ -62,7 +61,6 @@ enum CHIP8OPCode {
         switch (p, x, y, n) {
         case (0x0, 0x0, 0xE, 0x0): self = .CLS
         case (0x0, 0x0, 0xE, 0xE): self = .RET
-        case (0x0, _, _, _): self = .SYS(nnn: nnn)
         case (0x1, _, _, _): self = .JP(nnn: nnn)
         case (0x2, _, _, _): self = .CALL(nnn: nnn)
         case (0x3, _, _, _): self = .SE(x: x, kk: kk)

@@ -84,7 +84,6 @@ public class CHIP8 {
             guard machine.sp > .zero else { return }
             machine.sp -= 1
             machine.pc = machine.stack[Int(machine.sp)]
-        case .SYS(let nnnn): break
         case .JP(let nnn): machine.pc = nnn
         case .CALL(let nnn):
             guard machine.sp < machine.stack.count else { return }
