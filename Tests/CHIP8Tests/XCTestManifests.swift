@@ -14,6 +14,7 @@ extension CHIP8MachineTests {
         ("testSoundTimer", testSoundTimer),
         ("testStackPointer", testStackPointer),
         ("testStackSize", testStackSize),
+        ("testWaitKey", testWaitKey),
     ]
 }
 

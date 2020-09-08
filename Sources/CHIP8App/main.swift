@@ -31,36 +31,42 @@ private enum Constants {
 }
 
 class MainApp {
-    let chip8: CHIP8
-    
+    private let chip8: CHIP8
+    private let window: OpaquePointer
+    private let renderer: OpaquePointer
+    private let texture: OpaquePointer
+    private var surface: SDL_Surface?
+
     init(chip8: CHIP8 = CHIP8()) {
-        self.chip8 = chip8
-    }
-
-    func start() {
-        chip8.delegate = self
         SDL_Init(SDL_INIT_VIDEO)
-        let window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MASK), Int32(SDL_WINDOWPOS_CENTERED_MASK), 640, 320, SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
-
-        var pixelFormat: UInt32 {
+        self.chip8 = chip8
+        self.window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MASK),
+                                       Int32(SDL_WINDOWPOS_CENTERED_MASK), 640, 320,
+                                       SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
+        self.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED.rawValue)
+        
+        let pixelFormat: UInt32 = {
             #if os(Linux)
                 return UInt32(SDL_PIXELFORMAT_RGBA8888)
             #else
                 return SDL_PIXELFORMAT_RGBA8888.rawValue
             #endif
-        }
+        }()
+        
+        self.texture = SDL_CreateTexture(renderer, pixelFormat, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue), 64, 32)
+        self.surface = SDL_CreateRGBSurface(0, 64, 32, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)?.move()
+        
+    }
 
-        let renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED.rawValue)
-        let texture = SDL_CreateTexture(renderer, pixelFormat, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue), 64, 32)
-        guard var surface = SDL_CreateRGBSurface(0, 64, 32, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)?.move()
-            else { return }
-
+    func start(game: Data) {
+        guard var surface = surface, chip8.loadROM(data: game) else { return }
+        chip8.delegate = self
 
         var event = SDL_Event()
         var mustQuit: Bool = false
         var lastTick: UInt32 = SDL_GetTicks()
         var cycles: UInt32 = SDL_GetTicks()
-        chip8.loadROM()
+        
         while !mustQuit {
             while (SDL_PollEvent(&event) != 0) {
                 switch (event.type) {
@@ -92,15 +98,18 @@ class MainApp {
                 lastTick = SDL_GetTicks()
             }
         }
-
-        SDL_DestroyRenderer(renderer)
-        SDL_DestroyWindow(window)
-        SDL_Quit()
-
+        
+        finishExecution()
     }
 }
 
 private extension MainApp {
+    func finishExecution() {
+        SDL_DestroyRenderer(renderer)
+        SDL_DestroyWindow(window)
+        SDL_Quit()
+    }
+    
     func isKeyPressed(_ key: UInt8) -> Bool {
         guard let sdlKeys = SDL_GetKeyboardState(nil) else { return false }
         return sdlKeys[Int(Constants.keys[Int(key)].rawValue)] != .zero
@@ -116,4 +125,4 @@ extension MainApp: CHIP8Delegate {
 
 
 let main = MainApp()
-main.start()
+main.start(game: Roms.pongData)

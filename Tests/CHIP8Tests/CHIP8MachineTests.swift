@@ -38,4 +38,9 @@ final class CHIP8MachineTests: XCTestCase {
     func testSoundTimer() {
         XCTAssert((chip8.st as Any) is UInt8, "The instruction register is not UInt8")
     }
+    
+    func testWaitKey() {
+        XCTAssert((chip8.waitKey as Any) is UInt8, "The instruction register is not UInt8")
+        XCTAssert(chip8.waitKey == .max, "The default value of waitKey is wrong")
+    }
 }

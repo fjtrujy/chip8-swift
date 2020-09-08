@@ -48,7 +48,9 @@ public struct CHIP8Machine {
         return (firstCode << 8) | secondCode
     }
     
-    var waitKey: UInt8 = UInt8.max
+    var waitKey: UInt8 = .max
+    
+    let availableMem: UInt16 = UInt16(Constants.memSize) - Constants.pcPos
     
     public init() {
         var mem: [UInt8] = [UInt8](repeating: .zero, count: Constants.memSize) // Available Memory
