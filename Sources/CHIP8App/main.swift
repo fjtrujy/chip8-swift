@@ -29,24 +29,26 @@ func my_main() {
         else { return }
 
 
-    SDL_LockTexture(texture, nil, &surface.pixels, &surface.pitch)
-
-    // We need to specify the type of the array
-    let content = surface.pixels?.assumingMemoryBound(to: UInt32.self)
-    chip8.screenContent().enumerated().forEach { content?[$0] = ($1 == false) ? .zero : 0xFFFFFFFF }
-//    content?.assign(repeating: 0xFF, count: 32*Int(surface.pitch))
-    
-    SDL_UnlockTexture(texture)
-
-
-    var ev = SDL_Event()
+    var event = SDL_Event()
     var mustQuit: Bool = false
     var lastTick: UInt32 = SDL_GetTicks()
+    var cycles: UInt32 = SDL_GetTicks()
     chip8.loadROM()
     while !mustQuit {
+        while (SDL_PollEvent(&event) != 0) {
+            switch (event.type) {
+            case SDL_QUIT.rawValue: mustQuit = true;
+            default: break
+           }
+        }
+        
+        if (SDL_GetTicks() - cycles > 1) {
+            chip8.step()
+            cycles = SDL_GetTicks()
+        }
         
         if (SDL_GetTicks() - lastTick > (1000/60)) {
-            chip8.step()
+            chip8.decreaseTimers()
             
             SDL_LockTexture(texture, nil, &surface.pixels, &surface.pitch)
             let content = surface.pixels?.assumingMemoryBound(to: UInt32.self)
@@ -58,11 +60,6 @@ func my_main() {
             SDL_RenderPresent(renderer)
             lastTick = SDL_GetTicks()
         }
-        
-        
-        SDL_WaitEvent(&ev)
-        // Exit the app
-        mustQuit = SDL_EventType(ev.type) == SDL_QUIT
     }
 
     SDL_DestroyRenderer(renderer)

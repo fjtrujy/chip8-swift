@@ -69,6 +69,7 @@ public class CHIP8 {
     
     public func step() {
         let opCode = CHIP8OPCode(opCode: machine.opCode)
+//        print(opCode)
         increasePC()
         
         switch opCode {
@@ -88,17 +89,19 @@ public class CHIP8 {
         case .SNE(let x, let kk): machine.v[Int(x)] != kk ? increasePC() : nil
         case .SE_VxVy(let x, let y): machine.v[Int(x)] == machine.v[Int(y)] ? increasePC() : nil
         case .LD_Vx(let x, let kk): machine.v[Int(x)] = kk
-        case .ADD(let x, let kk): machine.v[Int(x)] += kk
+        case .ADD(let x, let kk): machine.v[Int(x)] =  UInt8((Int16(machine.v[Int(x)]) + Int16(kk)) & 0xFF)
         case .LD_VxVy(x: let x, y: let y): machine.v[Int(x)] = machine.v[Int(y)]
         case .OR(let x, let y): machine.v[Int(x)] |= machine.v[Int(y)]
         case .AND(let x, let y): machine.v[Int(x)] &= machine.v[Int(y)]
         case .XOR(let x, let y): machine.v[Int(x)] ^= machine.v[Int(y)]
         case .ADD_VxVy(let x, let y):
-            machine.v[0xF] = machine.v[Int(x)] > machine.v[Int(x)] + machine.v[Int(y)] ? 1 : .zero // CARRY FLAG
-            machine.v[Int(x)] += machine.v[Int(y)]
+            let total = UInt8((UInt16(machine.v[Int(x)]) + UInt16(machine.v[Int(y)])) & 0xFF )
+            machine.v[Constants.lastRegPos] = machine.v[Int(x)] > total ? 1 : .zero // CARRY FLAG
+            machine.v[Int(x)] = total
         case .SUB(let x, let y):
+            let total = UInt8((Int16(machine.v[Int(x)]) - Int16(machine.v[Int(y)])) & 0xFF )
             machine.v[Constants.lastRegPos] = machine.v[Int(x)] > machine.v[Int(y)] ? 1 : .zero // CARRY FLAG
-            machine.v[Int(x)] -= machine.v[Int(y)]
+            machine.v[Int(x)] = total
         case .SHR(let x):
             machine.v[Constants.lastRegPos] = machine.v[Int(x)] & 1
             machine.v[Int(x)] >>= 1
@@ -126,6 +129,11 @@ public class CHIP8 {
         case .LD_FROM_Vxs(let x): (0...x).forEach { machine.v[Int($0)] = machine.mem[Int(machine.i + UInt16($0))] }
         case .UKNOWN: print("Trying to execute a uknown instructions")
         }
+    }
+    
+    public func decreaseTimers() {
+        (machine.dt > .zero) ? machine.dt -= 1 : nil
+        (machine.st > .zero) ? machine.st -= 1 : nil
     }
     
     private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
