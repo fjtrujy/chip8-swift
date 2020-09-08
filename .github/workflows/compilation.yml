@@ -35,9 +35,9 @@ jobs:
       run: |
         swift build -c release
     
-    # - name: Run project
-    #   run: |
-    #     ./.build/release/orbis-parser
+    - name: Get short SHA
+      id: slug
+      run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
 
     - name: Prepare upload
       run: |
@@ -46,7 +46,7 @@ jobs:
     
     - uses: actions/upload-artifact@v2
       with:
-        name: CHIP8App-${{matrix.os}}
+        name: CHIP8App--${{ steps.slug.outputs.sha8 }}-${{matrix.os}}
         path: CHIP8App
 
     # - name: Create tag name
