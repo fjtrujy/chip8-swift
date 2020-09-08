@@ -20,7 +20,7 @@ public struct CHIP8Machine {
     var dt: UInt8 = .zero // Delay Timer
     var st: UInt8 = .zero // Sound Timer
     
-    var screen: [UInt8] = [UInt8](repeating: .zero, count: Constants.screenSize)
+    var screen: [Bool] = [Bool](repeating: false, count: Constants.screenSize)
     
     var opCode: UInt16 {
         let firstCode: UInt16 = UInt16(mem[Int(pc)])

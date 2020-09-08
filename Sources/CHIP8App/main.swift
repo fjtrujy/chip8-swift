@@ -33,7 +33,7 @@ func my_main() {
 
     // We need to specify the type of the array
     let content = surface.pixels?.assumingMemoryBound(to: UInt32.self)
-    chip8.screenContent().enumerated().forEach { content?[$0] = ($1 == .zero) ? .zero : 0xFFFFFFFF }
+    chip8.screenContent().enumerated().forEach { content?[$0] = ($1 == false) ? .zero : 0xFFFFFFFF }
 //    content?.assign(repeating: 0xFF, count: 32*Int(surface.pitch))
     
     SDL_UnlockTexture(texture)
@@ -42,10 +42,17 @@ func my_main() {
     var ev = SDL_Event()
     var mustQuit: Bool = false
     var lastTick: UInt32 = SDL_GetTicks()
+    chip8.loadROM()
     while !mustQuit {
         
         if (SDL_GetTicks() - lastTick > (1000/60)) {
             chip8.step()
+            
+            SDL_LockTexture(texture, nil, &surface.pixels, &surface.pitch)
+            let content = surface.pixels?.assumingMemoryBound(to: UInt32.self)
+            chip8.screenContent().enumerated().forEach { content?[$0] = ($1 == false) ? .zero : 0xFFFFFFFF }
+            SDL_UnlockTexture(texture)
+            
             SDL_RenderClear(renderer)
             SDL_RenderCopy(renderer, texture, nil, nil)
             SDL_RenderPresent(renderer)
