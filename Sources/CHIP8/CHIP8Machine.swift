@@ -48,6 +48,8 @@ public struct CHIP8Machine {
         return (firstCode << 8) | secondCode
     }
     
+    var waitKey: UInt8 = UInt8.max
+    
     public init() {
         var mem: [UInt8] = [UInt8](repeating: .zero, count: Constants.memSize) // Available Memory
         Constants.hexCodes.enumerated().forEach { mem[Constants.startHexCode + $0] = $1 }
