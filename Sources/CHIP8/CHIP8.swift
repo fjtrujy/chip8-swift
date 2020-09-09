@@ -117,9 +117,7 @@ public class CHIP8 {
         case .LD_FROM_DT(let x): machine.v[Int(x)] = machine.dt
         case .LD_FROM_K(let x): machine.waitKey = x
         case .LD_TO_DT(let x): machine.dt = machine.v[Int(x)]
-        case .LD_TO_ST(let x):
-            machine.st = machine.v[Int(x)]
-            machine.st != .zero ? delegate?.chip8(self, pauseAudio: false) : nil
+        case .LD_TO_ST(let x): machine.st = machine.v[Int(x)]
         case .ADD_I(let x): machine.i += UInt16(machine.v[Int(x)])
         case .LD_TO_I(let x): machine.i = UInt16(machine.hexCodePos(hexCode: x))
         case .LD_TO_B(let x): ldToB(x: x)
@@ -131,10 +129,9 @@ public class CHIP8 {
     
     public func decreaseTimers() {
         (machine.dt > .zero) ? machine.dt -= 1 : nil
-        if (machine.st > .zero) {
-            machine.st -= 1
-            machine.st == .zero ? delegate?.chip8(self, pauseAudio: true) : nil
-        }
+        (machine.st > .zero) ? machine.st -= 1 : nil
+        
+        delegate?.chip8(self, pauseAudio: machine.st == .zero)
     }
     
     public func keyPressed(key: UInt8) { machine.waitKey = key }
