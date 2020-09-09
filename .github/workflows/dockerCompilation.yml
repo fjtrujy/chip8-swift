@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     container: fedora:latest
     steps:
+    - uses: actions/checkout@v2
+    
     - name: Install dependencies
       run: |
-        dnf install swift-lang
-    - uses: actions/checkout@v2
+        dnf -y update
+        dnf -y install swift-lang SDL2
