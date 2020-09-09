@@ -13,8 +13,14 @@ let package = Package(
             name: "CHIP8",
             dependencies: []),
         .target(
-            name: "CHIP8App",
+            name: "CHIP8Roms",
+            dependencies: []),
+        .target(
+            name: "CHIP8FE",
             dependencies: ["SDL2", "CHIP8"]),
+        .target(
+            name: "CHIP8App",
+            dependencies: ["CHIP8FE", "CHIP8Roms"]),
         .testTarget(
             name: "CHIP8Tests",
             dependencies: ["CHIP8"]),
