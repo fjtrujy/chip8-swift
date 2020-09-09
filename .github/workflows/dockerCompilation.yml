@@ -16,7 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         dnf -y update
-        dnf -y install swift-lang SDL2
+        dnf -y install swift-lang SDL2 git
         
     - name: Run test (in Release, with optimization level)
       run: |
