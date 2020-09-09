@@ -1,0 +1,17 @@
+name: CI-compile
+
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+    types: [run_build]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+    - name: Install dependencies
+      run: |
+        dnf install swift-lang
+    - uses: actions/checkout@v2
