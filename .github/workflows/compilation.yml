@@ -27,11 +27,23 @@ jobs:
         brew update
         brew install sdl2
 
+    - name: Run test LinuxAlternative (in Release, with optimization level)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        swift test -Xswiftc -O -DLinuxAlternative
+    
     - name: Run test (in Release, with optimization level)
+      if: matrix.os != 'ubuntu-latest'
       run: |
         swift test -Xswiftc -O
 
-    - name: Compile project (in Release)
+    - name: Compile project LinuxAlternative (in Release)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        swift build -c release -Xswiftc -DLinuxAlternative
+    
+    - name: Compile project LinuxAlternative (in Release)
+      if: matrix.os != 'ubuntu-latest'
       run: |
         swift build -c release
     
