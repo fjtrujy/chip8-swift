@@ -46,7 +46,7 @@ class MainApp {
         self.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED.rawValue)
         
         let pixelFormat: UInt32 = {
-            #if os(Linux)
+            #if LinuxAlternative
                 return UInt32(SDL_PIXELFORMAT_RGBA8888)
             #else
                 return SDL_PIXELFORMAT_RGBA8888.rawValue
