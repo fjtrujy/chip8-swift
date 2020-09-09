@@ -117,7 +117,9 @@ public class CHIP8 {
         case .LD_FROM_DT(let x): machine.v[Int(x)] = machine.dt
         case .LD_FROM_K(let x): machine.waitKey = x
         case .LD_TO_DT(let x): machine.dt = machine.v[Int(x)]
-        case .LD_TO_ST(let x): machine.st = machine.v[Int(x)]
+        case .LD_TO_ST(let x):
+            machine.st = machine.v[Int(x)]
+            machine.st != .zero ? delegate?.chip8(self, pauseAudio: false) : nil
         case .ADD_I(let x): machine.i += UInt16(machine.v[Int(x)])
         case .LD_TO_I(let x): machine.i = UInt16(machine.hexCodePos(hexCode: x))
         case .LD_TO_B(let x): ldToB(x: x)
@@ -129,12 +131,13 @@ public class CHIP8 {
     
     public func decreaseTimers() {
         (machine.dt > .zero) ? machine.dt -= 1 : nil
-        (machine.st > .zero) ? machine.st -= 1 : nil
+        if (machine.st > .zero) {
+            machine.st -= 1
+            machine.st == .zero ? delegate?.chip8(self, pauseAudio: true) : nil
+        }
     }
     
-    public func keyPressed(key: UInt8) {
-        machine.waitKey = key
-    }
+    public func keyPressed(key: UInt8) { machine.waitKey = key }
     
     private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
     private func clearScreen() { (0..<machine.screen.count).forEach { machine.screen[$0] = false } }
@@ -161,4 +164,5 @@ public class CHIP8 {
 
 public protocol CHIP8Delegate: class {
     func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool
+    func chip8(_ chip8: CHIP8, pauseAudio pause: Bool)
 }

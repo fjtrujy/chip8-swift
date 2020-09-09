@@ -32,14 +32,16 @@ private enum Constants {
 
 public class MainApp {
     private let chip8: CHIP8
+    private var audioSpec: AudioScpec
     private let window: OpaquePointer
     private let renderer: OpaquePointer
     private let texture: OpaquePointer
     private var surface: SDL_Surface?
 
     public init(chip8: CHIP8 = CHIP8()) {
-        SDL_Init(SDL_INIT_VIDEO)
+        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
         self.chip8 = chip8
+        self.audioSpec = AudioScpec()
         self.window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MASK),
                                        Int32(SDL_WINDOWPOS_CENTERED_MASK), 640, 320,
                                        SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
@@ -55,7 +57,8 @@ public class MainApp {
         
         self.texture = SDL_CreateTexture(renderer, pixelFormat, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue), 64, 32)
         self.surface = SDL_CreateRGBSurface(0, 64, 32, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)?.move()
-        
+
+        guard SDL_OpenAudio(&audioSpec.spec, nil) >= .zero else { return }
     }
 
     public func start(game: Data) {
@@ -107,6 +110,7 @@ private extension MainApp {
     func finishExecution() {
         SDL_DestroyRenderer(renderer)
         SDL_DestroyWindow(window)
+        SDL_CloseAudio()
         SDL_Quit()
     }
     
@@ -121,4 +125,5 @@ private extension MainApp {
 // MARK: - CHIP8Delegate
 extension MainApp: CHIP8Delegate {
     public func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool { isKeyPressed(key) }
+    public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { SDL_PauseAudio(pause ? 1 : .zero)  }
 }
