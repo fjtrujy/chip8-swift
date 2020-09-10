@@ -15,7 +15,9 @@ private enum Constants {
 
 public class CHIP8 {
     public weak var delegate: CHIP8Delegate?
+    public var screenContent: [Bool] { machine.screen }
     public var isWaitingKey: Bool { machine.waitKey != .max }
+    
     private var machine: CHIP8Machine
     private var mustQuit: Bool
     
@@ -24,7 +26,6 @@ public class CHIP8 {
         self.machine = machine
         self.mustQuit = mustQuit
     }
-    
 
     public func loadROM(data: Data) -> Bool {
         guard data.count < machine.availableMem else { return false }
@@ -35,14 +36,12 @@ public class CHIP8 {
         return true
     }
     
-    public var screenContent: [Bool] { machine.screen }
-    
     public func step() {
         let opCode = CHIP8OPCode(opCode: machine.opCode)
         increasePC()
         
         switch opCode {
-        case .CLS: clearScreen()
+        case .CLS: (0..<machine.screen.count).forEach { machine.screen[$0] = false }
         case .RET:
             guard machine.sp > .zero else { return }
             machine.sp -= 1
@@ -110,7 +109,6 @@ public class CHIP8 {
     
     // MARK: - Private Functions
     private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
-    private func clearScreen() { (0..<machine.screen.count).forEach { machine.screen[$0] = false } }
     private func drw(x: UInt8, y: UInt8, n: UInt8) {
         machine.v[Constants.lastRegPos] = .zero
         (0..<n).forEach { pass in
