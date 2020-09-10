@@ -65,6 +65,7 @@ public class Emulation {
     }
 }
 
+// MARK: - Private Methods
 private extension Emulation {
     func finishExecution() {
         video.finish()

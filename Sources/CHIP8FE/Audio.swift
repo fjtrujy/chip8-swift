@@ -21,10 +21,19 @@ struct Audio {
         var toneInc: Float = 2 * .pi * 1000 / Float(Constants.frequency)
     }
 
-    var spec: SDL_AudioSpec
-    var dev: SDL_AudioDeviceID
+    private var spec: SDL_AudioSpec
+    private var dev: SDL_AudioDeviceID
     
-    init () {
+    init() {
+        let block: SDL_AudioCallback = { (userData, stream, len) in
+            guard var userData = userData?.assumingMemoryBound(to: UserData.self).move()
+                else { return }
+            (0..<len).forEach {
+                stream?[Int($0)] = Uint8(sinf(userData.tonePos) + Constants.audioCorrection)
+                userData.tonePos += userData.toneInc
+            }
+        }
+        
         var spec = SDL_AudioSpec(freq: Constants.frequency,
                                  format: SDL_AudioFormat(AUDIO_U8),
                                  channels: 1,
@@ -32,14 +41,7 @@ struct Audio {
                                  samples: Constants.samples,
                                  padding: .min,
                                  size: .min,
-                                 callback: { (userData, stream, len) in
-                                    guard var userData = userData?.assumingMemoryBound(to: UserData.self).move()
-                                        else { return }
-                                    (0..<len).forEach {
-                                        stream?[Int($0)] = Uint8(sinf(userData.tonePos) + Constants.audioCorrection)
-                                        userData.tonePos += userData.toneInc
-                                    }
-        },
+                                 callback: block,
                                  userdata: &Constants.userData)
         
         let dev = SDL_OpenAudioDevice(nil, .zero, &spec, nil, SDL_AUDIO_ALLOW_FORMAT_CHANGE)
@@ -48,6 +50,6 @@ struct Audio {
         self.dev = dev
     }
     
-    func pause(_ pause: Bool) { SDL_PauseAudioDevice(dev , pause ? 1 : .zero) }
+    func pause(_ pause: Bool) { SDL_PauseAudioDevice(dev, pause ? 1 : .zero) }
     func close() { SDL_CloseAudioDevice(dev) }
 }

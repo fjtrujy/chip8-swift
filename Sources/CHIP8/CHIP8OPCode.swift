@@ -96,5 +96,4 @@ enum CHIP8OPCode {
         default: self = .UKNOWN
         }
     }
-
 }
