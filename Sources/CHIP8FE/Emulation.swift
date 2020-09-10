@@ -10,36 +10,21 @@ import SDL2
 import CHIP8
 
 private enum Constants {
-    static let keys = [
-        SDL_SCANCODE_X, // 0
-        SDL_SCANCODE_1, // 1
-        SDL_SCANCODE_2, // 2
-        SDL_SCANCODE_3, // 3
-        SDL_SCANCODE_Q, // 4
-        SDL_SCANCODE_W, // 5
-        SDL_SCANCODE_E, // 6
-        SDL_SCANCODE_A, // 7
-        SDL_SCANCODE_S, // 8
-        SDL_SCANCODE_D, // 9
-        SDL_SCANCODE_Z, // A
-        SDL_SCANCODE_C, // B
-        SDL_SCANCODE_4, // C
-        SDL_SCANCODE_R, // D
-        SDL_SCANCODE_F, // E
-        SDL_SCANCODE_V, // F
-    ]
+    static let frameDuration = 1000/60
 }
 
 public class Emulation {
     private let chip8: CHIP8
-    private var video: Video
-    private var audio: Audio
+    private let video: Video
+    private let audio: Audio
+    private let keyboard: Keyboard
 
     public init(chip8: CHIP8 = CHIP8()) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
         self.chip8 = chip8
         self.audio = Audio()
         self.video = Video()
+        self.keyboard = Keyboard()
     }
 
     public func start(game: Data) {
@@ -52,7 +37,7 @@ public class Emulation {
         var cycles: UInt32 = SDL_GetTicks()
         
         while !mustQuit {
-            while (SDL_PollEvent(&event) != 0) {
+            while (SDL_PollEvent(&event) != .zero) {
                 switch (event.type) {
                 case SDL_QUIT.rawValue: mustQuit = true;
                 default: break
@@ -62,13 +47,13 @@ public class Emulation {
             if (SDL_GetTicks() - cycles > 1) {
                 if !chip8.isWaitingKey {
                     chip8.step()
-                } else if let key = keyPressed() {
+                } else if let key = keyboard.keyPressed {
                     chip8.keyPressed(key: key)
                 }
                 cycles = SDL_GetTicks()
             }
             
-            if (SDL_GetTicks() - lastTick > (1000/60)) {
+            if (SDL_GetTicks() - lastTick > Constants.frameDuration) {
                 chip8.decreaseTimers()
                 
                 video.render(screenContent: chip8.screenContent)
@@ -86,17 +71,10 @@ private extension Emulation {
         audio.close()
         SDL_Quit()
     }
-    
-    func isKeyPressed(_ key: UInt8) -> Bool {
-        guard let sdlKeys = SDL_GetKeyboardState(nil) else { return false }
-        return sdlKeys[Int(Constants.keys[Int(key)].rawValue)] != .zero
-    }
-    
-    func keyPressed() -> UInt8? { (0..<UInt8(Constants.keys.count)).first { isKeyPressed($0) } }
 }
 
 // MARK: - CHIP8Delegate
 extension Emulation: CHIP8Delegate {
-    public func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool { isKeyPressed(key) }
+    public func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool { keyboard.isKeyPressed(key) }
     public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { audio.pause(pause) }
 }

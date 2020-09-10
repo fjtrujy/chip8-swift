@@ -5,31 +5,6 @@
 //  Created by Francisco Javier Trujillo Mata on 30/08/2020.
 //
 
-//Memory Map:
-//+---------------+= 0xFFF (4095) End of Chip-8 RAM
-//|               |
-//|               |
-//|               |
-//|               |
-//|               |
-//| 0x200 to 0xFFF|
-//|     Chip-8    |
-//| Program / Data|
-//|     Space     |
-//|               |
-//|               |
-//|               |
-//+- - - - - - - -+= 0x600 (1536) Start of ETI 660 Chip-8 programs
-//|               |
-//|               |
-//|               |
-//+---------------+= 0x200 (512) Start of most Chip-8 programs
-//| 0x000 to 0x1FF|
-//| Reserved for  |
-//|  interpreter  |
-//+---------------+= 0x000 (0) Start of Chip-8 RAM
-
-
 import Foundation
 
 private enum Constants {
@@ -50,9 +25,7 @@ public class CHIP8 {
         self.mustQuit = mustQuit
     }
     
-//    func loadROM(path: String = "\(FileManager.default.currentDirectoryPath)/PONG") {
-//        guard let data = FileManager.default.contents(atPath: path) else { return }
-//        print(data)
+
     public func loadROM(data: Data) -> Bool {
         guard data.count < machine.availableMem else { return false }
         let upper: Int = Int(machine.pc) + data.count - 1
@@ -66,7 +39,6 @@ public class CHIP8 {
     
     public func step() {
         let opCode = CHIP8OPCode(opCode: machine.opCode)
-//        print(opCode)
         increasePC()
         
         switch opCode {
@@ -136,6 +108,7 @@ public class CHIP8 {
     
     public func keyPressed(key: UInt8) { machine.waitKey = key }
     
+    // MARK: - Private Functions
     private func increasePC() { machine.pc += 2 & Constants.MAXPCValue }
     private func clearScreen() { (0..<machine.screen.count).forEach { machine.screen[$0] = false } }
     private func drw(x: UInt8, y: UInt8, n: UInt8) {
@@ -159,6 +132,7 @@ public class CHIP8 {
     }
 }
 
+// MARK: - CHIP8Delegate
 public protocol CHIP8Delegate: class {
     func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool
     func chip8(_ chip8: CHIP8, pauseAudio pause: Bool)

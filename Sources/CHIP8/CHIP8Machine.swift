@@ -1,5 +1,29 @@
 import Foundation
 
+//Memory Map:
+//+---------------+= 0xFFF (4095) End of Chip-8 RAM
+//|               |
+//|               |
+//|               |
+//|               |
+//|               |
+//| 0x200 to 0xFFF|
+//|     Chip-8    |
+//| Program / Data|
+//|     Space     |
+//|               |
+//|               |
+//|               |
+//+- - - - - - - -+= 0x600 (1536) Start of ETI 660 Chip-8 programs
+//|               |
+//|               |
+//|               |
+//+---------------+= 0x200 (512) Start of most Chip-8 programs
+//| 0x000 to 0x1FF|
+//| Reserved for  |
+//|  interpreter  |
+//+---------------+= 0x000 (0) Start of Chip-8 RAM
+
 private enum Constants {
     static let memSize = 4096
     static let regs = 16
@@ -7,7 +31,7 @@ private enum Constants {
     static let pcPos: UInt16 = 0x200
     static let screenSize = 64*32
     static let startHexCode = 0x50
-    static let hexCodeLenght = 5
+    static let hexCodeLenght: UInt8 = 5
     static let hexCodes: [UInt8] = [
         0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
         0x20, 0x60, 0x20, 0x20, 0x70, // 1
@@ -54,9 +78,11 @@ public struct CHIP8Machine {
     
     public init() {
         var mem: [UInt8] = [UInt8](repeating: .zero, count: Constants.memSize) // Available Memory
-        Constants.hexCodes.enumerated().forEach { mem[Constants.startHexCode + $0] = $1 }
+        Constants.hexCodes.enumerated().forEach { mem[Constants.startHexCode + $0] = $1 } // Save HexCode in Memory
         self.mem = mem
     }
     
-    func hexCodePos(hexCode: UInt8) -> UInt8 { UInt8(Constants.startHexCode) + (v[Int(hexCode)] * 5) }
+    func hexCodePos(hexCode: UInt8) -> UInt8 {
+        UInt8(Constants.startHexCode) + (v[Int(hexCode)] * Constants.hexCodeLenght)
+    }
 }
