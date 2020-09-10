@@ -9,4 +9,4 @@ import Foundation
 import CHIP8Roms
 import CHIP8FE
 
-MainApp().start(game: Roms.pongData)
+Emulation().start(game: Roms.pongData)

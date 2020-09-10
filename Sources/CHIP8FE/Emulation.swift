@@ -30,7 +30,7 @@ private enum Constants {
     ]
 }
 
-public class MainApp {
+public class Emulation {
     private let chip8: CHIP8
     private var audioSpec: AudioScpec
     private let window: OpaquePointer
@@ -106,7 +106,7 @@ public class MainApp {
     }
 }
 
-private extension MainApp {
+private extension Emulation {
     func finishExecution() {
         SDL_DestroyRenderer(renderer)
         SDL_DestroyWindow(window)
@@ -123,7 +123,7 @@ private extension MainApp {
 }
 
 // MARK: - CHIP8Delegate
-extension MainApp: CHIP8Delegate {
+extension Emulation: CHIP8Delegate {
     public func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool { isKeyPressed(key) }
     public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { SDL_PauseAudio(pause ? 1 : .zero)  }
 }
