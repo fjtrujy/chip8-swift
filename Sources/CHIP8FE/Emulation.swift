@@ -32,7 +32,7 @@ private enum Constants {
 
 public class Emulation {
     private let chip8: CHIP8
-    private var audioSpec: AudioScpec
+    private var audioSpec: Audio
     private let window: OpaquePointer
     private let renderer: OpaquePointer
     private let texture: OpaquePointer
@@ -41,7 +41,7 @@ public class Emulation {
     public init(chip8: CHIP8 = CHIP8()) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
         self.chip8 = chip8
-        self.audioSpec = AudioScpec()
+        self.audioSpec = Audio()
         self.window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MASK),
                                        Int32(SDL_WINDOWPOS_CENTERED_MASK), 640, 320,
                                        SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
@@ -110,7 +110,7 @@ private extension Emulation {
     func finishExecution() {
         SDL_DestroyRenderer(renderer)
         SDL_DestroyWindow(window)
-        SDL_CloseAudio()
+        audioSpec.closeAudio()
         SDL_Quit()
     }
     
@@ -125,5 +125,5 @@ private extension Emulation {
 // MARK: - CHIP8Delegate
 extension Emulation: CHIP8Delegate {
     public func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool { isKeyPressed(key) }
-    public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { SDL_PauseAudio(pause ? 1 : .zero)  }
+    public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { audioSpec.pauseAudio(pause: pause) }
 }
