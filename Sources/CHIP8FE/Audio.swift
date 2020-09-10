@@ -48,6 +48,6 @@ struct Audio {
         self.dev = dev
     }
     
-    func pauseAudio(pause: Bool) { SDL_PauseAudioDevice(dev , pause ? 1 : .zero) }
-    func closeAudio() { SDL_CloseAudioDevice(dev) }
+    func pause(_ pause: Bool) { SDL_PauseAudioDevice(dev , pause ? 1 : .zero) }
+    func close() { SDL_CloseAudioDevice(dev) }
 }

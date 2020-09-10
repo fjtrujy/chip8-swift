@@ -32,37 +32,18 @@ private enum Constants {
 
 public class Emulation {
     private let chip8: CHIP8
-    private var audioSpec: Audio
-    private let window: OpaquePointer
-    private let renderer: OpaquePointer
-    private let texture: OpaquePointer
-    private var surface: SDL_Surface?
+    private var video: Video
+    private var audio: Audio
 
     public init(chip8: CHIP8 = CHIP8()) {
         SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)
         self.chip8 = chip8
-        self.audioSpec = Audio()
-        self.window = SDL_CreateWindow("CHIP 8 Emulator", Int32(SDL_WINDOWPOS_CENTERED_MASK),
-                                       Int32(SDL_WINDOWPOS_CENTERED_MASK), 640, 320,
-                                       SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
-        self.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED.rawValue)
-        
-        let pixelFormat: UInt32 = {
-            #if LinuxAlternative
-                return UInt32(SDL_PIXELFORMAT_RGBA8888)
-            #else
-                return SDL_PIXELFORMAT_RGBA8888.rawValue
-            #endif
-        }()
-        
-        self.texture = SDL_CreateTexture(renderer, pixelFormat, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue), 64, 32)
-        self.surface = SDL_CreateRGBSurface(0, 64, 32, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000)?.move()
-
-        guard SDL_OpenAudio(&audioSpec.spec, nil) >= .zero else { return }
+        self.audio = Audio()
+        self.video = Video()
     }
 
     public func start(game: Data) {
-        guard var surface = surface, chip8.loadROM(data: game) else { return }
+        guard chip8.loadROM(data: game) else { return }
         chip8.delegate = self
 
         var event = SDL_Event()
@@ -90,14 +71,7 @@ public class Emulation {
             if (SDL_GetTicks() - lastTick > (1000/60)) {
                 chip8.decreaseTimers()
                 
-                SDL_LockTexture(texture, nil, &surface.pixels, &surface.pitch)
-                let content = surface.pixels?.assumingMemoryBound(to: UInt32.self)
-                chip8.screenContent().enumerated().forEach { content?[$0] = ($1 == false) ? .zero : 0xFFFFFFFF }
-                SDL_UnlockTexture(texture)
-                
-                SDL_RenderClear(renderer)
-                SDL_RenderCopy(renderer, texture, nil, nil)
-                SDL_RenderPresent(renderer)
+                video.render(screenContent: chip8.screenContent)
                 lastTick = SDL_GetTicks()
             }
         }
@@ -108,9 +82,8 @@ public class Emulation {
 
 private extension Emulation {
     func finishExecution() {
-        SDL_DestroyRenderer(renderer)
-        SDL_DestroyWindow(window)
-        audioSpec.closeAudio()
+        video.finish()
+        audio.close()
         SDL_Quit()
     }
     
@@ -125,5 +98,5 @@ private extension Emulation {
 // MARK: - CHIP8Delegate
 extension Emulation: CHIP8Delegate {
     public func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool { isKeyPressed(key) }
-    public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { audioSpec.pauseAudio(pause: pause) }
+    public func chip8(_ chip8: CHIP8, pauseAudio pause: Bool) { audio.pause(pause) }
 }

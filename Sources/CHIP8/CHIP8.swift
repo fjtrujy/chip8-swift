@@ -62,7 +62,7 @@ public class CHIP8 {
         return true
     }
     
-    public func screenContent()-> [Bool] { machine.screen }
+    public var screenContent: [Bool] { machine.screen }
     
     public func step() {
         let opCode = CHIP8OPCode(opCode: machine.opCode)
