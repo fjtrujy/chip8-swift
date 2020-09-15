@@ -3,11 +3,11 @@
     "pins": [
       {
         "package": "SDL2",
-        "repositoryURL": "https://github.com/ctreffs/SwiftSDL2.git",
+        "repositoryURL": "https://github.com/fjtrujy/SwiftSDL2.git",
         "state": {
-          "branch": null,
-          "revision": "8f41b0102b5f69f38763635bc8118d469ac7193b",
-          "version": "1.1.0"
+          "branch": "master",
+          "revision": "83a8b169bdefb4579aa530209209784912c3d4d1",
+          "version": null
         }
       }
     ]
