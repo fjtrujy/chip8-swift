@@ -10,7 +10,7 @@ import SDL2
 
 private enum Constants {
     static let frequency: Int32 = 44100
-    static let samples: UInt16 = 4096
+    static let samples: UInt16 = 1024
     static let audioCorrection: Float = 127
     static var userData = Audio.UserData()
 }
@@ -34,15 +34,13 @@ struct Audio {
             }
         }
         
-        var spec = SDL_AudioSpec(freq: Constants.frequency,
-                                 format: SDL_AudioFormat(AUDIO_U8),
-                                 channels: 1,
-                                 silence: .min,
-                                 samples: Constants.samples,
-                                 padding: .min,
-                                 size: .min,
-                                 callback: block,
-                                 userdata: &Constants.userData)
+        var spec = SDL_AudioSpec()
+        spec.freq = Constants.frequency
+        spec.format = SDL_AudioFormat(AUDIO_U8)
+        spec.channels = 1
+        spec.samples = Constants.samples
+        spec.callback = block
+        spec.userdata = withUnsafeMutablePointer(to: &Constants.userData) {UnsafeMutableRawPointer($0)}
         
         let dev = SDL_OpenAudioDevice(nil, .zero, &spec, nil, SDL_AUDIO_ALLOW_FORMAT_CHANGE)
         
@@ -50,6 +48,10 @@ struct Audio {
         self.dev = dev
     }
     
-    func pause(_ pause: Bool) { SDL_PauseAudioDevice(dev, pause ? 1 : .zero) }
+    func pause(_ pause: Bool) {
+        let currentStatus = SDL_GetAudioDeviceStatus(dev)
+        let desiredStatus = pause ? SDL_AUDIO_PAUSED : SDL_AUDIO_PLAYING
+        guard currentStatus != desiredStatus else { return }
+        SDL_PauseAudioDevice(dev, pause ? 1 : .zero) }
     func close() { SDL_CloseAudioDevice(dev) }
 }
