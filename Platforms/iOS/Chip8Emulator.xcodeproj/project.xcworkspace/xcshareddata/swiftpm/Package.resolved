@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "CHIP8",
+        "repositoryURL": "https://github.com/fjtrujy/chip8-swift",
+        "state": {
+          "branch": "master",
+          "revision": "7c26e5f8d055f3d18d3622899c3a452108120b41",
+          "version": null
+        }
+      },
+      {
         "package": "SDL2",
         "repositoryURL": "https://github.com/fjtrujy/SwiftSDL2.git",
         "state": {

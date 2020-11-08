@@ -8,9 +8,8 @@ let package = Package(
     products: [
         .library(
             name: "CHIP8Emulator",
-            targets: ["CHIP8FE", "CHIP8", "CHIP8Roms"]),
+            targets: ["CHIP8", "CHIP8Roms"]),
     ], dependencies: [
-        .package(name: "SDL2", url: "https://github.com/fjtrujy/SwiftSDL2.git", .branch("master"))
     ],
     targets: [
         .target(
@@ -19,12 +18,6 @@ let package = Package(
         .target(
             name: "CHIP8Roms",
             dependencies: []),
-        .target(
-            name: "CHIP8FE",
-            dependencies: ["SDL2", "CHIP8"]),
-        .target(
-            name: "CHIP8App",
-            dependencies: ["CHIP8FE", "CHIP8Roms"]),
         .testTarget(
             name: "CHIP8Tests",
             dependencies: ["CHIP8"]),
