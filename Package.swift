@@ -10,7 +10,7 @@ let package = Package(
             name: "CHIP8Emulator",
             targets: ["CHIP8FE", "CHIP8", "CHIP8Roms"]),
     ], dependencies: [
-        .package(name: "SDL2", url: "https://github.com/fjtrujy/SwiftSDL2.git", .branch("master"))
+        .package(name: "SDL2", url: "https://github.com/fjtrujy/SwiftSDL2.git", .branch("android-test"))
     ],
     targets: [
         .target(

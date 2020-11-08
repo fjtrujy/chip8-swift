@@ -5,8 +5,8 @@
         "package": "SDL2",
         "repositoryURL": "https://github.com/fjtrujy/SwiftSDL2.git",
         "state": {
-          "branch": "master",
-          "revision": "83a8b169bdefb4579aa530209209784912c3d4d1",
+          "branch": "android-test",
+          "revision": "684cbc591bd1e5d19fb4bab24302b3c93455bc58",
           "version": null
         }
       }
