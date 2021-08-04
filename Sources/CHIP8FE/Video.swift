@@ -34,15 +34,7 @@ struct Video {
                                        SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_OPENGL.rawValue)
         self.renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED.rawValue)
         
-        let pixelFormat: UInt32 = {
-            #if LinuxAlternative
-                return UInt32(SDL_PIXELFORMAT_RGBA8888)
-            #else
-                return SDL_PIXELFORMAT_RGBA8888.rawValue
-            #endif
-        }()
-        
-        self.texture = SDL_CreateTexture(renderer, pixelFormat, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
+        self.texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888.rawValue, Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
                                          Constants.textureSize.width, Constants.textureSize.height)
         self.surface = SDL_CreateRGBSurface(.zero, Constants.textureSize.width, Constants.textureSize.height,
                                             Constants.depthColor,
