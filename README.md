@@ -1,3 +1,3 @@
 # CHIP8
 
-A description of this package.
+A CHIP8 emulator 100% done in Swift
