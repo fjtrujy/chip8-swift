@@ -20,7 +20,7 @@ final class CHIP8Tests: XCTestCase {
     }
     
     func testMemoryDecoding() {
-        let attrText = NSAttributedText(string: "Hello")
+        let attrText = NSAttributedString(string: "Hello")
         XCTAssert(attrText != nil)
         
 //        chip8.loop()
