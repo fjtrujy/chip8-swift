@@ -20,6 +20,7 @@ final class CHIP8Tests: XCTestCase {
     }
     
     func testMemoryDecoding() {
+        let attrtext = NSAttributedString("dummy")
 //        chip8.loop()
         XCTAssert(true)
     }
