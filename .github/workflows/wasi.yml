@@ -1,0 +1,16 @@
+name: WASI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  webassembly:
+    runs-on: ubuntu-latest
+    container: ghcr.io/swiftwasm/carton:main
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run Tets
+      run: carton test

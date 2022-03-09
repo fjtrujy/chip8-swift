@@ -2,12 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "SDL2",
-        "repositoryURL": "https://github.com/fjtrujy/SwiftSDL2.git",
+        "package": "JavaScriptKit",
+        "repositoryURL": "https://github.com/swiftwasm/JavaScriptKit",
         "state": {
-          "branch": "master",
-          "revision": "83a8b169bdefb4579aa530209209784912c3d4d1",
-          "version": null
+          "branch": null,
+          "revision": "6c31bad4b1ef18385262f5154845648c8c95ae94",
+          "version": "0.12.0"
         }
       }
     ]
