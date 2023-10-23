@@ -8,6 +8,7 @@ let package = Package(
     products: [
         .library(
             name: "CHIP8Emulator",
+            type: .dynamic,
             targets: ["CHIP8", "CHIP8Roms"]),
     ], dependencies: [
     ],
