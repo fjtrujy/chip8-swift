@@ -131,7 +131,7 @@ public class CHIP8 {
 }
 
 // MARK: - CHIP8Delegate
-public protocol CHIP8Delegate: class {
+public protocol CHIP8Delegate: AnyObject {
     func chip8(_ chip8: CHIP8, isPressingKey key: UInt8) -> Bool
     func chip8(_ chip8: CHIP8, pauseAudio pause: Bool)
 }
