@@ -16,6 +16,7 @@ jobs:
     - name: Generate SO
       run: |
         /usr/bin/swift-build-all --product CHIP8Emulator
+        /usr/bin/strip-so libCHIP8Emulator.so
     
     # - name: Get short SHA
     #   id: slug
@@ -25,7 +26,9 @@ jobs:
     #   run: |
     #     mv .build/release/CHIP8App CHIP8App
     
-    # - uses: actions/upload-artifact@v3
-    #   with:
-    #     name: CHIP8App--${{ steps.slug.outputs.sha8 }}-fedora-latest
-    #     path: CHIP8App
+    - uses: actions/upload-artifact@v3
+      with:
+        name: CHIP8Emulator-${{ steps.slug.outputs.sha8 }}-android-latest
+        path: |
+          .build/**/*.so
+          /root/lib
