@@ -1,0 +1,31 @@
+name: Android CI
+
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+    types: [run_build]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: kittymac/silkroad:latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Generate SO
+      run: |
+        /usr/bin/swift-build-all --product CHIP8Emulator
+    
+    # - name: Get short SHA
+    #   id: slug
+    #   run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+
+    # - name: Prepare upload
+    #   run: |
+    #     mv .build/release/CHIP8App CHIP8App
+    
+    # - uses: actions/upload-artifact@v3
+    #   with:
+    #     name: CHIP8App--${{ steps.slug.outputs.sha8 }}-fedora-latest
+    #     path: CHIP8App
