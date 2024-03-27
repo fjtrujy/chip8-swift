@@ -18,6 +18,10 @@ jobs:
         dnf -y update
         dnf -y install swift-lang SDL2-devel git
         
+    - name: Run test (in Debug, without optimization level)
+      run: |
+        swift test
+    
     - name: Run test (in Release, with optimization level)
       run: |
         swift test -Xswiftc -O
