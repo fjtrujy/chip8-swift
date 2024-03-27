@@ -54,9 +54,12 @@ enum CHIP8OPCode {
         let nnn = opCode & Constants.nnnMask
         let kk = UInt8(opCode & Constants.kkMask)
         let n = UInt8(opCode & Constants.nMask)
-        let x = UInt8((opCode >> 8) & Constants.nMask)
-        let y = UInt8((opCode >> 4) & Constants.nMask)
-        let p = UInt8(opCode >> 12)
+        let shift4 = opCode >> 4
+        let shift8 = shift4 >> 4
+        let shift12 = shift8 >> 4
+        let x = UInt8(shift8 & Constants.nMask)
+        let y = UInt8(shift4 & Constants.nMask)
+        let p = UInt8(shift12 & 0x000F)
 
         switch (p, x, y, n) {
         case (0x0, 0x0, 0xE, 0x0): self = .CLS
