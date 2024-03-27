@@ -29,6 +29,10 @@ jobs:
     - name: Compile project (in Release)
       run: |
         swift build -c release
+
+    - name: Compile using release + symbols
+      run: |
+        swift test -c release -Xswiftc -enable-testing -Xswiftc -g
     
     - name: Get short SHA
       id: slug

@@ -34,6 +34,10 @@ jobs:
     - name: Run test (in Release, with optimization level)
       run: |
         swift test -Xswiftc -O
+    
+    - name: Compile using release + symbols
+      run: |
+        swift test -c release -Xswiftc -enable-testing -Xswiftc -g
 
     - name: Compile project (in Release)
       run: |
